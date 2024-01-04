@@ -1,0 +1,5 @@
+E:\Users\projects\XUnity\src\Translators\YoudaoTranslta\obj\Debug\net35\YoudaoTranslate.csproj.AssemblyReference.cache
+E:\Users\projects\XUnity\src\Translators\YoudaoTranslta\obj\Debug\net35\YoudaoTranslate.GeneratedMSBuildEditorConfig.editorconfig
+E:\Users\projects\XUnity\src\Translators\YoudaoTranslta\obj\Debug\net35\YoudaoTranslate.AssemblyInfoInputs.cache
+E:\Users\projects\XUnity\src\Translators\YoudaoTranslta\obj\Debug\net35\YoudaoTranslate.AssemblyInfo.cs
+E:\Users\projects\XUnity\src\Translators\YoudaoTranslta\obj\Debug\net35\YoudaoTranslate.csproj.CoreCompileInputs.cache
