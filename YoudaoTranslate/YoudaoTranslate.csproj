@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net471</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\XUnity.AutoTranslator.Plugin.Core\XUnity.AutoTranslator.Plugin.Core.csproj" />
+		<ProjectReference Include="..\..\XUnity.Common\XUnity.Common.csproj" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA;   XCOPY /Y /I &quot;$(TargetDir)$(TargetName)$(TargetExt)&quot; &quot;$(SolutionDir)dist\Translators\&quot;&#xD;&#xA;)" />
+	</Target>
+
+</Project>
