@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net471</TargetFramework>
+		<LangVersion>7.3</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\XUnity.AutoTranslator\src\XUnity.AutoTranslator.Plugin.Core\XUnity.AutoTranslator.Plugin.Core.csproj" />
+		<ProjectReference Include="..\..\XUnity.AutoTranslator\src\XUnity.Common\XUnity.Common.csproj" />
+	</ItemGroup>
+
+	<Target Name="CopyToDist" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
+		<MakeDir Directories="$(MSBuildProjectDirectory)\..\..\dist\Translators" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\dist\Translators" />
+		<Message Importance="High" Text="YoudaoTranslate.dll 已输出到 dist\Translators" />
+	</Target>
+
+</Project>
