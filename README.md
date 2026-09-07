@@ -1,6 +1,6 @@
 # XUnity.AutoTranslator.YoudaoTranslateEndpoint
 
-[XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) 有道在线翻译（Web 端点）实现
+[XUnity.AutoTranslator](https://github.com/bbepis/XUnity.AutoTranslator) 有道在线翻译（Web 端点）实现，2.0内容全部由ai生成
 —— **2026-09 升级版**（对接有道新版 `dict-trans.youdao.com` webmain/SSE 接口）。
 
 ## 为什么原来的 Dll 不能用了？
