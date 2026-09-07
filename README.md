@@ -133,6 +133,27 @@ fanyi.youdao.com 前端 app.js 内置常量:
    - 新常量密钥：抓 `https://shared.ydstatic.com/dict/translation-website/<版本>/js/app.*.js`，搜索 `translate-webmain-key-getter`，其附近的 `signSecretKey`/`constSign` 字符串即为新 `KeyGetterConstSign`；
 3. 把三个新值写进 `AutoTranslatorConfig.ini` 的 `[Youdao]` 段。
 
+## FAQ · AI 开发的碎碎念（v2.0 是怎么来的）
+
+> 本节与代码无关，纯属"开发日志 + 碎碎念"，写给好奇这仓库为什么从"一个小插件"变成"双引擎 + 自研 HTTP + 半自动 Cookie"的人看。
+
+**Q1：好好的插件为什么突然"坏"了？**
+2024 年写的 v1 逆向的是有道旧网页接口 `dict.youdao.com/webtranslate`（常量密钥 `fsdsogkndfokasodnaso` 那套）。2025 年末有道整体换血：旧接口服务端直接拒收（实测 `request error`），签名常量全部作废，前端还换成了**动态密钥 + SSE 流式**的新协议。所以不是"你哪写错了"，是"对面搬家了"。
+
+**Q2：那 v2.0 是怎么折腾出来的？（时间线流水账）**
+- 从有道新版前端 `app.js` 逆向出 `genParamV3` 签名：所有参数按 key 字典序拼 `k=v&...&key=密钥` 取 MD5，密钥还要先 POST `translate/key` 动态换。期间 AI 自己写过一个**算错的内联 MD5**（连 `md5("abc")` 都对不上），最后是靠浏览器抓包比对签名才揪出来的——低级错误 +1。
+- 本机没有 VS/msbuild/.NET 目标包，于是现场装了 Visual Studio 2026、启用了 .NET 3.5 系统功能（中途 DISM 卡 37.8% 半天），编译链才跑通。
+- 换上新协议后游戏里仍然翻不出来：XUnity 自带的 WebClient 读真实有道的 chunked/HTTPS 响应会拿到**空 body**（对本地测试服务器却正常），排查很久后把端点改成自研 `HttpWebRequest` 客户端才根治。
+- 中途还闹过"翻译方向是不是反了"的疑云：llmLite 引擎把 `奥に挿れる` 翻成"可插入奥"这种怪译文，和网页 YNMT 的"插在里面"差距太大，用户一度怀疑插件把源/目标语言写反了。最后用**同一引擎双向对照实验**证明方向没错，纯粹是 llmLite 对个别日语短句理解差——于是干脆把网页同款 YNMT 通道也做成了 `Mode=ynmt`。
+- 之后又陆续踩了：游戏内 `TypeLoadException`（取密钥响应改用纯正则解析绕开）、取密钥接口按 IP/Cookie 风控（做了无头浏览器一键取 Cookie + 半自动刷新）、Windows PowerShell 5.1 里 `'a' + $var` 在数组里被拆成两个参数（端口号变成 `--port= 9227`）、headless Edge 带 `about:blank` 会报 "Multiple targets" 崩溃…… 每一条都很蠢，但都真实发生过。
+- 最后补了自测程序（`YoudaoSelfTest`：`-mock` 本地模拟 + 真实联网两种模式），游戏内验证通过后发布 v2.0。
+
+**Q3：为什么要写这么长一段？**
+因为这次升级的初衷之一是**体验与测试 DeepSeek Harness**：让 AI 自己从"仓库克隆 → 逆向新协议 → 装工具链 → 编译 → 游戏内联调 → 发布 Release"全流程自主跑了一遍。上面这些坑就是它真实的排障记录——AI 会犯低级错误，但给它浏览器、抓包工具、编译器日志和耐心，它也能一路把坑填完。总耗时约 **4~5 个小时**（含 VS 安装、DISM、反复编译与联网验证的等待），对话 token 费用约 **¥12**（用户原话："烧了 12 块钱的 token"）——比请人逆向便宜，比不折腾贵在头发。
+
+**Q4：以后有道再改接口怎么办？**
+优先看本文档"维护指引"（通常改 ini 常量即可）；若连协议都换了，那就再请一位 AI 来重演一遍本 FAQ。
+
 ## 免责声明与提示
 
 - 本实现属于对有道网页端公开接口的逆向适配，仅供学习交流，请勿高频滥用；接口随时可能再次变更。
